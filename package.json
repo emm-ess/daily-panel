@@ -1,0 +1,55 @@
+{
+  "name": "daily-panel",
+  "version": "0.0.1",
+  "description": "a simple tool to use the daily panel of donald.org as wallpaper",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "husky",
+    "start": "node dist/index.js",
+    "lint": "npm-run-all lint:script lint:package-json",
+    "lint:script": "eslint --report-unused-disable-directives --cache --fix .",
+    "lint:package-json": "sort-package-json package.json",
+    "build": "rm -rf dist && tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "author": {
+    "name": "Marten Schälicke",
+    "url": "https://emm-ess.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emm-ess/daily-panel.git"
+  },
+  "type": "module",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@emm-ess-configs/eslint-config": "^0.2.3",
+    "@eslint/compat": "^1.2.8",
+    "@tsconfig/node22": "^22.0.1",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/node": "^22.14.0",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "npm-run-all2": "^7.0.2",
+    "sort-package-json": "^3.0.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "sharp": "^0.34.1",
+    "wallpaper": "^7.2.1"
+  },
+  "commitlint": {
+    "extends": "@commitlint/config-conventional"
+  },
+  "lint-staged": {
+    "*.{js,ts,json}": "eslint --cache --fix",
+    "package.json": "sort-package-json --quiet"
+  },
+  "browserslist": [
+    "maintained node versions"
+  ]
+}

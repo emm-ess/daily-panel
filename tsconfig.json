@@ -1,0 +1,8 @@
+{
+  "extends": ["@tsconfig/node22/tsconfig.json", "@tsconfig/strictest"],
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "types": ["node"],
+    "outDir": "dist"
+  }
+}
