@@ -12,6 +12,19 @@ import {HEIGHT, LOCAL_PANEL_DIR, PADDING, URL_BASE, WIDTH} from './const.js'
 
 fs.mkdirSync(LOCAL_PANEL_DIR, {recursive: true})
 
+function log(message: string) {
+    writeLog(process.stdout, 'info', message)
+}
+
+function logError(message: string) {
+    writeLog(process.stderr, 'error', message)
+}
+
+function writeLog(output: NodeJS.WriteStream, level: 'error' | 'info', message: string) {
+    const date = new Date()
+    output.write(`[${date.toISOString()} - ${level}] ${message}\n`)
+}
+
 function dateToParts(date: Date, separator: '/' | '-'): string {
     return [
         date.getFullYear(),
@@ -31,23 +44,24 @@ async function downloadImage(url: string, target: string): Promise<void> {
     try {
         const response = await fetch(url)
         if (!response.ok) {
-            console.error(`HTTP error! status: ${response.status}`, url)
+            logError(`HTTP error! status: ${response.status} ${url}`)
             return
         }
         if (!response.body) {
-            console.error('Response body is null')
+            logError('Response body is null')
             return
         }
         const stream = fs.createWriteStream(target)
         await finished(Readable.fromWeb(response.body).pipe(stream))
     }
     catch (error) {
-        console.error('Error while downloading panel:', error)
+        logError(`Error while downloading panel: ${error}`)
     }
 }
 
 // keep for later, if we need to get the color of the border
 type Color = Record<'r' | 'g' | 'b', number>
+/* eslint-disable sonarjs/no-commented-code */
 // async function getBorderColor({data}: {data: Buffer}): Promise<Color> {
 async function getBorderColor(input: string): Promise<Color> {
     const image = sharp(input).blur(5)
@@ -70,6 +84,7 @@ async function getBorderColor(input: string): Promise<Color> {
     // const [r, g, b] = (await image.stats()).channels.map((c) => c.mean)
     // return {r: r || 0, g: g || 0, b: b || 0}
 }
+/* eslint-enable sonarjs/no-commented-code */
 
 async function scaleImage(input: string, output: string): Promise<void> {
     if (fs.existsSync(output)) {
@@ -101,6 +116,11 @@ async function updatePanel(): Promise<void> {
     await downloadImage(url, localRawFile)
     await scaleImage(localRawFile, localScaledFile)
     await setWallpaper(localScaledFile, {screen: 'all'})
+    log(`Set wallpaper to ${localScaledFile}`)
 }
-
-updatePanel()
+try {
+    await updatePanel()
+}
+catch (error) {
+    logError(`Error while updating panel: ${error}`)
+}
