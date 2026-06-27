@@ -12,7 +12,7 @@ import {HEIGHT, LOCAL_PANEL_DIR, PADDING, URL_BASE, WIDTH} from './const.js'
 
 fs.mkdirSync(LOCAL_PANEL_DIR, {recursive: true})
 
-function log(message: string) {
+function log(message: string): void {
     writeLog(process.stdout, 'info', message)
 }
 
@@ -61,11 +61,12 @@ async function downloadImage(url: string, target: string): Promise<void> {
 
 // keep for later, if we need to get the color of the border
 type Color = Record<'r' | 'g' | 'b', number>
-/* eslint-disable sonarjs/no-commented-code */
+
 // async function getBorderColor({data}: {data: Buffer}): Promise<Color> {
 async function getBorderColor(input: string): Promise<Color> {
     const image = sharp(input).blur(5)
-    return (await image.stats()).dominant
+    const stats = await image.stats()
+    return stats.dominant
     // const {width, height} = info
     // const heightSides = height - (2 * BLEND_SIZE)
     // const stats = await Promise.all([
@@ -84,7 +85,6 @@ async function getBorderColor(input: string): Promise<Color> {
     // const [r, g, b] = (await image.stats()).channels.map((c) => c.mean)
     // return {r: r || 0, g: g || 0, b: b || 0}
 }
-/* eslint-enable sonarjs/no-commented-code */
 
 async function scaleImage(input: string, output: string): Promise<void> {
     if (fs.existsSync(output)) {

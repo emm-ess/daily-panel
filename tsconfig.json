@@ -1,8 +1,10 @@
 {
-  "extends": ["@tsconfig/node22/tsconfig.json", "@tsconfig/strictest"],
+  "extends": ["@tsconfig/node24/tsconfig.json", "@tsconfig/strictest"],
   "include": ["src/**/*.ts"],
   "compilerOptions": {
     "types": ["node"],
-    "outDir": "dist"
+    "rootDir": "./src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
   }
 }
